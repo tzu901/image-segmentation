@@ -7,31 +7,32 @@ class UNet(nn.Module):
         super(UNet, self).__init__()
         
         # Encoder 
-        self.enc1 = self.conv_block(3, 16)
-        self.enc2 = self.conv_block(16, 32)
-        self.enc3 = self.conv_block(32, 64)
-        self.enc4 = self.conv_block(64, 128)
-        self.enc5 = self.conv_block(128, 256)
+        self.enc1 = self.conv_block(3, 8)
+        self.enc2 = self.conv_block(8, 16)
+        self.enc3 = self.conv_block(16, 32)
+        self.enc4 = self.conv_block(32, 64)
+        self.enc5 = self.conv_block(64, 128)
         
         # Decoder
-        self.up6 = nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2)
-        self.dec6 = self.conv_block(256, 128)
-        self.up7 = nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2)
-        self.dec7 = self.conv_block(128, 64)
-        self.up8 = nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2)
-        self.dec8 = self.conv_block(64, 32)
-        self.up9 = nn.ConvTranspose2d(32, 16, kernel_size=2, stride=2)
-        self.dec9 = self.conv_block(32, 16)
-        
-        self.outc = nn.Conv2d(16, 1, kernel_size=1)
+        self.up6 = nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2)
+        self.dec6 = self.conv_block(128, 64)
+        self.up7 = nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2)
+        self.dec7 = self.conv_block(64, 32)
+        self.up8 = nn.ConvTranspose2d(32, 16, kernel_size=2, stride=2)
+        self.dec8 = self.conv_block(32, 16)
+        self.up9 = nn.ConvTranspose2d(16, 8, kernel_size=2, stride=2)
+        self.dec9 = self.conv_block(16, 8)
+
+        self.outc = nn.Conv2d(8, 1, kernel_size=1)
     
     def conv_block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
-            nn.Dropout(0.1),
+            nn.BatchNorm2d(out_channels),
             nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
+            nn.BatchNorm2d(out_channels)
         )
     
     def forward(self, x):
@@ -60,7 +61,8 @@ class UNet(nn.Module):
         u9 = torch.cat([u9, c1], dim=1)
         c9 = self.dec9(u9)
         
-        outputs = torch.sigmoid(self.outc(c9))
+        # outputs = torch.sigmoid(self.outc(c9))
+        outputs = self.outc(c9) 
         return outputs
 
 if __name__ == "__main__":
