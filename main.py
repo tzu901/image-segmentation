@@ -32,7 +32,7 @@ dataset = SatelliteDataset(
 kfold = KFold(n_splits=NUM_FOLDS, shuffle=True)
 criterion = nn.BCEWithLogitsLoss()
 
-print('======================== Training Started ========================')
+print('========================== Training Started ==========================')
 
 for fold, (train_idx, val_idx) in enumerate(kfold.split(dataset)):
     print(f'Fold {fold+1}/{NUM_FOLDS}')

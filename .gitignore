@@ -1,0 +1,10 @@
+archive.zip
+model/f_1/unet_fold_10.pth
+model/f_1/unet_fold_2.pth
+model/f_1/unet_fold_3.pth
+model/f_1/unet_fold_4.pth
+model/f_1/unet_fold_5.pth
+model/f_1/unet_fold_6.pth
+model/f_1/unet_fold_7.pth
+model/f_1/unet_fold_8.pth
+model/f_1/unet_fold_9.pth
